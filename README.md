@@ -25,3 +25,33 @@ As part of this process however, you should look to refactor some of the code in
 Once you have completed test, zip up your solution, excluding any build artifacts to reduce the size, and email it back to our recruitment team.
 
 Good luck!
+
+--------------------------------------------------------------------------------------------------
+
+# Implementation notes:
+
+## Accout class improvements:
+I have refactored the Account class to include methods for withdrawing and transferring money, 
+which encapsulates the logic for these operations and makes the domain model richer in behavior.
+
+* Encapsulation: Business rules moved into methods.
+* Validation: Added checks for sufficient funds and valid transfer amounts.
+* Constants: Used constants to avoid magic numbers.
+* Helper methods: Created helper methods for better visibility, reuse, and cleaner code.
+
+## Transfer/Withdraw Money improvements:
+* Refactored the .Execute method to utilize the new methods in the Account class.
+* Elimiated code duplication by centralizing the logic for checking funds and sending notifications.
+* Transaction safety `TransactionScope` for transfers: Ensured that both accounts are updated atomically to prevent inconsistencies.
+* Notifcations are triggered after transactions are successful, preventing unwanted notifications in case of failures.
+
+## Tests:
+* Added unit tests for the new methods in the Account class to ensure they behave correctly under various scenarios.
+* Added tests for the .Execute method (Withdraw/Transfer) to verify that it correctly handles withdrawals and sends notifications
+
+# If I had more time:
+* I would add more comprehensive tests, including edge cases, bringing the coverage up to 80-90%.
+* I would refactor public setters on the `Account` class, enforce validity at construction, and introduce domain-specific exceptions / result types instead of generic exceptions.
+* Improve transactional and concurrency behavior for transfers by abstracting transaction management and adding tests that assert all-or-nothing updates under failure scenarios.
+* Add basic observability (logging/metrics) around withdraw/transfer flows and introduce static analysis rules in CI to maintain code quality over time.
+* Introduce async/await across the application boundary (e.g. `IAccountRepository` and the `TransferMoney` / `WithdrawMoney` use cases) so that the operations are non-blocking.
