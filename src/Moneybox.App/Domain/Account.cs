@@ -25,7 +25,7 @@ namespace Moneybox.App
         {
             if (Balance - amount < 0m)
             {
-                throw new InvalidOperationException("Insufficient funds to make transfer");
+                throw new InvalidOperationException("Insufficient funds to make a withdraw");
             }
 
             Balance = Balance - amount;
