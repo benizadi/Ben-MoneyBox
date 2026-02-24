@@ -63,5 +63,37 @@ namespace MoneyBox.App.Tests.Domain
             var exception = Assert.Throws<InvalidOperationException>(() => account.PayIn(600m));
             Assert.Equal("Account pay in limit reached", exception.Message);
         }
+
+        [Fact]
+        public void Withdraw_WithZeroAmount_ThrowsArgumentException()
+        {
+            // Arrange
+            var account = new Account
+            {
+               Balance = 1000m,
+                Withdrawn = 0m,
+                PaidIn = 0m
+            };
+
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentException>(() => account.Withdraw(0m));
+            Assert.Equal("Withdraw amount must be positive", exception.Message);
+        }
+
+        [Fact]
+        public void PayIn_WithNegativeAmount_ThrowsArgumentException()
+        {
+            // Arrange
+            var account = new Account
+            {
+                Balance = 1000m,
+                Withdrawn = 0m,
+                PaidIn = 0m
+            };
+
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentException>(() => account.PayIn(-100m));
+            Assert.Equal("Pay in amount must be positive", exception.Message);
+        }
     }
 }
