@@ -3,9 +3,6 @@ using Moneybox.App.DataAccess;
 using Moneybox.App.Domain.Services;
 using Moneybox.App.Features;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MoneyBox.App.Tests.Features
 {
