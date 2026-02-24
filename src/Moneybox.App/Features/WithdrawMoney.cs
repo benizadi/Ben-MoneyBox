@@ -21,12 +21,12 @@ namespace Moneybox.App.Features
 
             from.Withdraw(amount);
 
-            if(from.HasLowFunds)
+            this.accountRepository.Update(from);
+
+            if (from.HasLowFunds)
             {
                 this.notificationService.NotifyFundsLow(from.User.Email);
             }
-
-            this.accountRepository.Update(from);
         }
     }
 }

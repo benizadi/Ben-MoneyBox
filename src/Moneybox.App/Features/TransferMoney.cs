@@ -1,6 +1,7 @@
 ﻿using Moneybox.App.DataAccess;
 using Moneybox.App.Domain.Services;
 using System;
+using System.Transactions;
 
 namespace Moneybox.App.Features
 {
@@ -20,22 +21,26 @@ namespace Moneybox.App.Features
             var from = this.accountRepository.GetAccountById(fromAccountId);
             var to = this.accountRepository.GetAccountById(toAccountId);
 
+            from.Withdraw(amount);
+            to.PayIn(amount);
+
+            using (var scope = new TransactionScope())
+            {
+                 this.accountRepository.Update(from);
+                 this.accountRepository.Update(to);
+
+                 scope.Complete();
+            }
 
             if (from.HasLowFunds)
             {
                 this.notificationService.NotifyFundsLow(from.User.Email);
             }
 
-            from.Withdraw(amount);
-            to.PayIn(amount);
-
             if (to.HasReachedPayInLimit)
             {
                 this.notificationService.NotifyApproachingPayInLimit(to.User.Email);
             }
-
-            this.accountRepository.Update(from);
-            this.accountRepository.Update(to);
         }
     }
 }
